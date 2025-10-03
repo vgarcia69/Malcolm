@@ -8,7 +8,10 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if (valid_argument(argv))
+    {
+        return 1;
+    }
     if (valid_ip_address(argv[1]))
-        printf("HEY cestbon");
     return 0;
 }
