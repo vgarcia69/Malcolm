@@ -10,86 +10,76 @@
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-SRC = ./ft_isalpha.c\
-		./ft_isdigit.c\
-		./ft_isalnum.c\
-		./ft_isascii.c\
-		./ft_isprint.c\
-		./ft_strlen.c\
-		./ft_memset.c\
-		./ft_bzero.c\
-		./ft_memcpy.c\
-		./ft_memmove.c\
-		./ft_strlcpy.c\
-		./ft_strlcat.c\
-		./ft_toupper.c\
-		./ft_tolower.c\
-		./ft_strchr.c\
-		./ft_strrchr.c\
-		./ft_strncmp.c\
-		./ft_memchr.c\
-		./ft_memcmp.c\
-		./ft_strnstr.c\
-		./ft_atoi.c\
-		./ft_calloc.c\
-		./ft_strdup.c\
-		./ft_substr.c\
-		./ft_strjoin.c\
-		./ft_strtrim.c\
-		./ft_split.c\
-		./ft_itoa.c\
-		./ft_strmapi.c\
-		./ft_striteri.c\
-		./ft_putchar_fd.c\
-		./ft_putstr_fd.c\
-		./ft_putendl_fd.c\
-		./ft_putnbr_fd.c\
-		./ft_printf_utils.c\
-		./ft_printf_writechars.c\
-		./ft_printf_writenbrs.c\
-		./ft_printf.c\
-		./ft_strcpy.c\
-		./get_next_line.c
-SRC_BONUS = ./ft_lstadd_back.c\
-		./ft_lstadd_front.c\
-		./ft_lstclear.c\
-		./ft_lstdelone.c\
-		./ft_lstlast.c\
-		./ft_lstnew.c\
-		./ft_lstsize.c\
-		./ft_lstiter.c\
-		./ft_lstmap.c
+SRCFILE = ft_isalpha.c\
+		ft_isdigit.c\
+		ft_isalnum.c\
+		ft_isascii.c\
+		ft_isprint.c\
+		ft_strlen.c\
+		ft_memset.c\
+		ft_bzero.c\
+		ft_memcpy.c\
+		ft_memmove.c\
+		ft_strlcpy.c\
+		ft_strlcat.c\
+		ft_toupper.c\
+		ft_tolower.c\
+		ft_strchr.c\
+		ft_strrchr.c\
+		ft_strncmp.c\
+		ft_memchr.c\
+		ft_memcmp.c\
+		ft_strnstr.c\
+		ft_atoi.c\
+		ft_calloc.c\
+		ft_strdup.c\
+		ft_substr.c\
+		ft_strjoin.c\
+		ft_strtrim.c\
+		ft_split.c\
+		ft_itoa.c\
+		ft_strmapi.c\
+		ft_striteri.c\
+		ft_putchar_fd.c\
+		ft_putstr_fd.c\
+		ft_putendl_fd.c\
+		ft_putnbr_fd.c\
+		ft_printf_utils.c\
+		ft_printf_writechars.c\
+		ft_printf_writenbrs.c\
+		ft_printf.c\
+		ft_strcpy.c\
+		get_next_line.c
 
-OBJ = $(SRC:.c=.o)
-OBJ_BONUS = $(SRC_BONUS:.c=.o)
-NAME = libft.a
+EXEC = libft.a
+CC=cc
+SRCDIR=srcs/
+OBJDIR=.obj/
+DEPDIR=.dep/
+FORMAT=.c
+FLAGS= -Wextra -Werror -Wall -MMD -MP
 
-all: $(NAME)
+SRC= $(addprefix $(SRCDIR), $(SRCFILE))
+OBJ= $(addprefix $(OBJDIR), $(SRC:$(FORMAT)=.o))
+DEPS= $(addprefix $(DEPDIR),$(SRC:$(FORMAT)=.d))
 
-$(NAME): $(OBJ)
-		@ar rcs $(NAME) $(OBJ)
-		@echo "Libft Compiled !"
+-include $(DEPS)
 
-bonus : $(NAME) .bonus
+all: $(EXEC)
 
-.bonus: $(OBJ) $(OBJ_BONUS)
-		@ar rcs $(NAME) $(OBJ) $(OBJ_BONUS)
-		@touch .bonus
-		@echo "Libft bonus created"
+$(EXEC) : $(OBJ)
+	@ar rcs $(EXEC) $(OBJ)
 
-%.o: %.c libft.h Makefile
-		@$(CC) $(CFLAGS) -I . -c $< -o $@
-		@echo "Compiling $<"
+$(OBJDIR)%.o: %$(FORMAT) libft.h Makefile
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-clean :
-		@rm -f $(OBJ) $(OBJ_BONUS) .bonus
+fclean: clean
+	rm -f $(EXEC)
 
-fclean : clean
-		@rm -f $(NAME)
-		@echo "Libft cleaned"
+clean:
+	rm -rf $(OBJDIR) $(DEPDIR)
 
-re : fclean all
+re: fclean all
 
-.PHONY : re fclean clean all bonus
+.PHONY: re clean fclean all

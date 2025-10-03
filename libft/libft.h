@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ../libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgarcia <vgarcia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -29,7 +29,8 @@ int		ft_isdigit(int c);
 int		ft_isalnum(int c);
 int		ft_isascii(int c);
 int		ft_isprint(int c);
-size_t	ft_strlen(const char *s);
+ssize_t	ft_strlen(const char *s);
+ssize_t ft_size(void** obj);
 void	*ft_memset(void *s, int c, size_t n);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
@@ -78,8 +79,8 @@ int		isinbase(char c, const char *set);
 int		ft_writechar(char c);
 int		ft_writestr(char *s);
 
-int		count_word(const char *s, char c);
-void	free_tab(char **tab);
+int		ft_count_word(const char *s, char c);
+void	ft_free_tab(void **tab);
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 4096

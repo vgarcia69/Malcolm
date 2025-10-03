@@ -1,18 +1,19 @@
 EXEC=ft_malcolm
-FLAGS= -Wextra -Werror -Wall -MMD -MP
 CC=cc
-LANG=.c
-
+FORMAT=.c
 SRCDIR=srcs/
 INCDIR=includes/
 LIBDIR=libft/
 OBJDIR=.obj/
 DEPDIR=.dep/
 
-SRC= main
-SRC= $(addsuffix $(LANG), $(SRC))
-OBJ= $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
-DEPS= $(addprefix $(DEPDIR)/,$(SRC:.c=.d))
+FLAGS= -Wextra -Werror -Wall -I$(INCDIR) -MMD -MP
+
+SRCFILE= main address
+
+SRC= $(addprefix $(SRCDIR), $(addsuffix $(FORMAT), $(SRCFILE)))
+OBJ= $(addprefix $(OBJDIR), $(SRC:$(FORMAT)=.o))
+DEPS= $(addprefix $(DEPDIR),$(SRC:$(FORMAT)=.d))
 
 -include $(DEPS)
 
@@ -21,21 +22,21 @@ LIBFT=$(LIBDIR)libft.a
 all: $(EXEC)
 
 $(EXEC) : $(OBJ) $(LIBFT)
-	$(CC) $(OBJ) -o $@ $(LIBFT)
+	$(CC) $(FLAGS) $(OBJ) -o $@ $(LIBFT)
 
 $(LIBFT):
-	# a voir comment call make $(MAKE) ?
+	$(MAKE) --no-print-directory -C $(LIBDIR)
 
-%.o: %.c 
-	mkdir -p $(OBJDIR) $(DEPDIR)
+$(OBJDIR)%.o: %$(FORMAT) $(INCDIR) Makefile
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 fclean: clean
-	rm $(EXEC)
-	make fclean # a foutre dans le libfft
+	rm -f $(EXEC)
+	$(MAKE) --no-print-directory fclean -C $(LIBDIR)
 
 clean:
-	rm -r $(OBJDIR) $(DEPDIR)
+	rm -rf $(OBJDIR) $(DEPDIR)
 
 re: fclean all
 
