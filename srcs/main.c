@@ -8,8 +8,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    /*
-        check valid addr 
-    */
-    return valid_ip_address(argv[1]);
+    if (valid_ip_address(argv[1]))
+        printf("HEY cestbon");
+    return 0;
 }
