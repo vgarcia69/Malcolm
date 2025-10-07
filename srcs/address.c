@@ -1,49 +1,43 @@
 #include "../includes/include.h" 
-#include <ifaddrs.h>
-#include <arpa/inet.h>
-#include <linux/if_packet.h>
 
-static bool_t         valid_ip_address(char* ip_address);
-static bool_t         valid_mac_address(char* mac_address);
+static bool_t         valid_ip_address(char* ip_address, struct ifaddrs* ifa_head, bool_t flag);
+static bool_t         valid_mac_address(char* mac_address, struct ifaddrs* ifa_head);
 static unsigned char* mac_str_to_sll(char *mac_addr);
 static unsigned char  parse_byte(char* str);
 static int            hex_char_to_value(char c);
 
-bool_t valid_argument(char** argv)
+bool_t valid_argument(char** argv, struct ifaddrs* ifa_head)
 {
     bool_t flag = TRUE;
 
-    if (!valid_ip_address(argv[1]))
+    if (!valid_ip_address(argv[1], ifa_head, TRUE))
     {
-        printf("Error: source ip is invalid\n");
+        printf("ft_malcolm: unknown host or invalid IP address: (%s).\n", argv[1]);
         flag = FALSE;
     }
-    if (!valid_mac_address(argv[2]))
+    if (!valid_mac_address(argv[2], ifa_head))
     {
-        printf("Error: source mac address is invalid\n");
+        printf("ft_malcolm: unknown host or invalid MAC address: (%s).\n", argv[2]);
         flag = FALSE;
     }
-    if (!valid_ip_address(argv[3]))
+    if (!valid_ip_address(argv[3], ifa_head, FALSE))
     {
-        printf("Error: target ip is invalid\n");
+        printf("ft_malcolm: unknown host or invalid IP address: (%s).\n", argv[3]);
         flag = FALSE;
     }
-    if (!valid_mac_address(argv[4]))
+    if (!valid_mac_address(argv[4], ifa_head))
     {
-        printf("Error: target mac address is invalid\n");
+		printf("ft_malcolm: unknown host or invalid MAC address: (%s).\n", argv[4]);
         flag = FALSE;
     }
     return flag;
 }
 
-static bool_t valid_ip_address(char* ip_address)
+static bool_t valid_ip_address(char* ip_address, struct ifaddrs* ifa_head, bool_t flag)
 {
-    struct ifaddrs *ifa_head;
     struct in_addr addr_in;
 
     if (inet_pton(AF_INET, ip_address, &addr_in) != 1)
-        return FALSE;
-    if (getifaddrs(&ifa_head) < 0)
         return FALSE;
     for (struct ifaddrs *ifa = ifa_head; ifa != NULL; ifa = ifa->ifa_next)
     {
@@ -53,23 +47,20 @@ static bool_t valid_ip_address(char* ip_address)
             continue ;
         else if (addr_in.s_addr == ifa_addr->sin_addr.s_addr)
         {
-            freeifaddrs(ifa_head);
+            if (flag)
+                printf("Interface trouvée: %s\n", ifa->ifa_name);
             return TRUE;
         }
     }
-    freeifaddrs(ifa_head);
     return FALSE;
 }
 
-static bool_t valid_mac_address(char* mac_address)
+static bool_t valid_mac_address(char* mac_address, struct ifaddrs* ifa_head)
 {
-    struct ifaddrs* ifa_head;
     unsigned char*  sll_mac_addr;
 
     sll_mac_addr = mac_str_to_sll(mac_address);
     if (!sll_mac_addr)
-        return FALSE;
-    if (getifaddrs(&ifa_head) < 0)
         return FALSE;
     for (struct ifaddrs *ifa = ifa_head; ifa != NULL; ifa = ifa->ifa_next)
     {
@@ -79,12 +70,10 @@ static bool_t valid_mac_address(char* mac_address)
             continue ;
         else if (!ft_strncmp(ifa_addr->sll_addr, sll_mac_addr, 6))
         {
-            freeifaddrs(ifa_head);
             free(sll_mac_addr);
             return TRUE;
         }
     }
-    freeifaddrs(ifa_head);
     free(sll_mac_addr);
     return FALSE;
 }

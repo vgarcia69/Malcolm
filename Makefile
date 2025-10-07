@@ -9,7 +9,7 @@ DEPDIR=.dep/
 
 FLAGS= -Wextra -Werror -Wall -I$(INCDIR) -MMD -MP
 
-SRCFILE= main address
+SRCFILE= main address discuss
 
 SRC= $(addprefix $(SRCDIR), $(addsuffix $(FORMAT), $(SRCFILE)))
 OBJ= $(addprefix $(OBJDIR), $(SRC:$(FORMAT)=.o))
