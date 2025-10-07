@@ -19,16 +19,9 @@ int main(int argc, char **argv)
         return 1;
     }
 
+
     freeifaddrs(ifa_head);
 
-    int fd_socket;
-    unsigned char buffer[2048];
-    wait_request(&fd_socket, buffer);
-
-    printf("Now sending an ARP reply to the target address with spoofed source, please wait...\n");
-    send_reply(&fd_socket, buffer);
-
-    printf("Sent an ARP reply packet, you may now check the arp table on the target.\n");
-    printf("Exiting program...\n");
+    wait_request_and_reply();
     return 0;
 }

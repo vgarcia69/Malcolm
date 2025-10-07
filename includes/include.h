@@ -21,7 +21,7 @@
     typedef unsigned char bool_t;
 
     bool_t valid_argument(char** argv, struct ifaddrs* ifa_head);
-    bool_t wait_request(int* fd_socket, unsigned char buffer[2048]);
-    bool_t send_reply(int* fd_socket, unsigned char* buffer);
+    bool_t wait_request_and_reply();
+    bool_t send_reply(int* fd_socket, unsigned char* buffer, struct sockaddr_sll* addr_source, socklen_t addr_len);
 
 #endif
